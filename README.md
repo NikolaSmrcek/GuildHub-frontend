@@ -39,4 +39,5 @@ npm run preview
 ## Notes
 
 - This frontend is designed to work with the `GuildHub-backend` API using guild-scoped REST endpoints.
-- Add `VITE_BACKEND_URL` to a local `.env` if you want to wire API requests directly.
+- The current app fetches a raid catalog from backend route `/loot/raid-items`.
+- Add `VITE_BACKEND_URL` to a local `.env` if you want to point the frontend at a backend running on a different host or port.

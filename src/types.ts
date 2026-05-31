@@ -35,3 +35,23 @@ export interface DistributionRecord {
   rationale?: string;
   timestamp: string;
 }
+
+export type Difficulty = 'LFR' | 'Normal' | 'Heroic' | 'Mythic';
+
+export interface PlayerPriority {
+  id: string;
+  displayName: string;
+  role: string;
+  priority: 'main' | 'offspec';
+}
+
+export interface ItemWithPriority extends Item {
+  playersPriority: PlayerPriority[];
+}
+
+export interface DifficultyItems {
+  items: ItemWithPriority[];
+}
+
+export type RaidBossMap = Record<string, Partial<Record<Difficulty, DifficultyItems>>>;
+export type RaidCatalog = Record<string, RaidBossMap>;
