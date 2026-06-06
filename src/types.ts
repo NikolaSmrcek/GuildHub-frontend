@@ -1,3 +1,37 @@
+export interface Account {
+  id: string;
+  email: string;
+  displayName: string;
+  isActive: boolean;
+  isDeleted: boolean;
+  characters?: Character[];
+}
+
+export interface Guild {
+  id: string;
+  name: string;
+  realm: string;
+  faction: string;
+  guildType: string;
+  isDeleted: boolean;
+  characters?: Character[];
+}
+
+export interface Character {
+  id: string;
+  name: string;
+  realm: string;
+  faction: string;
+  playerClass?: string;
+  spec?: string;
+  itemLevel?: number;
+  accountId: string;
+  account?: Account;
+  guildId?: string;
+  guild?: Guild;
+  isDeleted: boolean;
+}
+
 export interface Item {
   id: string;
   name: string;
