@@ -43,7 +43,7 @@ export interface RaidbotsReport {
   playerSpec?: string;
   playerDpsMean: number;
   isValid: boolean;
-  rawData?: any;
+  rawData?: Record<string, unknown>;
   reportItems?: RaidbotsReportItem[];
   createdAt: string;
   updatedAt: string;
@@ -75,17 +75,17 @@ export interface LootRequest {
   raidId: string;
   itemId: string;
   requesterId: string;
-  priority: 'offspec' | 'main';
+  priority: "offspec" | "main";
   reason: string;
   timestamp: string;
-  status: 'open' | 'resolved' | 'withdrawn';
+  status: "open" | "resolved" | "withdrawn";
 }
 
 export interface CouncilVote {
   id: string;
   councilId: string;
   voterId: string;
-  vote: 'yes' | 'no' | 'abstain';
+  vote: "yes" | "no" | "abstain";
   weight?: number;
   comment?: string;
   timestamp: string;
@@ -101,13 +101,13 @@ export interface DistributionRecord {
   timestamp: string;
 }
 
-export type Difficulty = 'LFR' | 'Normal' | 'Heroic' | 'Mythic';
+export type Difficulty = "LFR" | "Normal" | "Heroic" | "Mythic";
 
 export interface PlayerPriority {
   id: string;
   displayName: string;
   role: string;
-  priority: 'main' | 'offspec';
+  priority: "main" | "offspec";
 }
 
 export interface ItemWithPriority extends Item {
@@ -118,5 +118,8 @@ export interface DifficultyItems {
   items: ItemWithPriority[];
 }
 
-export type RaidBossMap = Record<string, Partial<Record<Difficulty, DifficultyItems>>>;
+export type RaidBossMap = Record<
+  string,
+  Partial<Record<Difficulty, DifficultyItems>>
+>;
 export type RaidCatalog = Record<string, RaidBossMap>;
