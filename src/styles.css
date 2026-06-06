@@ -56,6 +56,85 @@ body {
   margin-top: 0;
 }
 
+.analyzer-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.analyzer-input {
+  flex: 1;
+  padding: 0.65rem 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 0.5rem;
+  background: rgba(30, 41, 59, 0.95);
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.analyzer-input:focus {
+  border-color: #3b82f6;
+}
+
+.analyzer-input:disabled {
+  opacity: 0.5;
+}
+
+.analyzer-btn {
+  padding: 0.65rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: #3b82f6;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.analyzer-btn:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.analyzer-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.1);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.report-result {
+  margin-top: 1.25rem;
+}
+
+.report-result h3 {
+  margin: 0 0 0.35rem;
+}
+
+.upgrade-list {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.upgrade-item {
+  border-left: 3px solid #22c55e;
+}
+
+.improvement {
+  color: #22c55e !important;
+  font-weight: 600;
+}
+
 .grid {
   display: grid;
   gap: 1rem;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { RaidCatalog } from './types';
+import type { RaidCatalog, RaidbotsReport } from './types';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:3000';
 
@@ -7,6 +7,11 @@ function App() {
   const [catalog, setCatalog] = useState<RaidCatalog | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const [reportUrl, setReportUrl] = useState('');
+  const [analyzing, setAnalyzing] = useState(false);
+  const [reportResult, setReportResult] = useState<RaidbotsReport | null>(null);
+  const [reportError, setReportError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchCatalog() {
@@ -27,6 +32,37 @@ function App() {
     fetchCatalog();
   }, []);
 
+  async function handleAnalyze() {
+    const trimmed = reportUrl.trim();
+    if (!trimmed) return;
+
+    setAnalyzing(true);
+    setReportResult(null);
+    setReportError(null);
+
+    try {
+      const res = await fetch(new URL('/raidbots/reports', BACKEND_URL).toString(), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ raidbotsReportUrl: trimmed }),
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        const msg =
+          body?.message ?? body?.error ?? `Request failed with status ${res.status}`;
+        throw new Error(msg);
+      }
+
+      const data: RaidbotsReport = await res.json();
+      setReportResult(data);
+    } catch (err) {
+      setReportError(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setAnalyzing(false);
+    }
+  }
+
   return (
     <div className="app-shell">
       <header className="app-header">
@@ -37,6 +73,53 @@ function App() {
       </header>
 
       <main>
+        {/* Raidbots report analyzer */}
+        <section className="panel">
+          <h2>Raidbots Report Analyzer</h2>
+          <p>Paste a Raidbots Droptimizer report URL to analyze potential upgrades.</p>
+          <div className="analyzer-row">
+            <input
+              type="text"
+              className="analyzer-input"
+              placeholder="https://www.raidbots.com/simbot/report/..."
+              value={reportUrl}
+              onChange={(e) => setReportUrl(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleAnalyze()}
+              disabled={analyzing}
+            />
+            <button className="analyzer-btn" onClick={handleAnalyze} disabled={analyzing}>
+              {analyzing ? 'Analyzing…' : 'Analyze'}
+            </button>
+          </div>
+          {reportError && <p className="error-message">{reportError}</p>}
+          {reportResult && (
+            <div className="report-result">
+              <h3>Report for {reportResult.playerName}</h3>
+              <p>
+                <strong>DPS Mean:</strong> {reportResult.playerDpsMean.toFixed(0)}
+                {reportResult.playerSpec && <> &middot; <strong>Spec:</strong> {reportResult.playerSpec}</>}
+              </p>
+              {reportResult.reportItems && reportResult.reportItems.length > 0 ? (
+                <>
+                  <p><strong>Upgrades found:</strong> {reportResult.reportItems.length}</p>
+                  <div className="upgrade-list">
+                    {reportResult.reportItems.map((ri) => (
+                      <div key={ri.id} className="card upgrade-item">
+                        <strong>{ri.itemName}</strong>
+                        <p>Your DPS: {ri.playerDpsMean.toFixed(0)} &rarr; Upgrade: {ri.upgradeDpsMean.toFixed(0)}</p>
+                        <p className="improvement">+{ri.dpsImprovement.toFixed(0)} DPS improvement</p>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <p>No upgrades identified in this report.</p>
+              )}
+            </div>
+          )}
+        </section>
+
+        {/* Raid Loot Catalog */}
         <section className="panel">
           <h2>Raid Loot Catalog</h2>
           <p>Fetched from the backend route <code>/loot/raid-items</code>.</p>
