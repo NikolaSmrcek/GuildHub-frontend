@@ -130,18 +130,33 @@ function App() {
                     {reportResult.reportItems.length}
                   </p>
                   <div className="upgrade-list">
-                    {reportResult.reportItems.map((ri) => (
-                      <div key={ri.id} className="card upgrade-item">
-                        <strong>{ri.itemName}</strong>
-                        <p>
-                          Your DPS: {ri.playerDpsMean.toFixed(0)} &rarr;
-                          Upgrade: {ri.upgradeDpsMean.toFixed(0)}
-                        </p>
-                        <p className="improvement">
-                          +{ri.dpsImprovement.toFixed(0)} DPS improvement
-                        </p>
-                      </div>
-                    ))}
+                    {[...reportResult.reportItems]
+                      .map((ri) => ({
+                        ...ri,
+                        dpsImprovementPercent:
+                          ri.playerDpsMean > 0
+                            ? (ri.dpsImprovement / ri.playerDpsMean) * 100
+                            : 0,
+                      }))
+                      .sort((a, b) => {
+                        const byPct =
+                          b.dpsImprovementPercent - a.dpsImprovementPercent;
+                        if (byPct !== 0) return byPct;
+                        return b.dpsImprovement - a.dpsImprovement;
+                      })
+                      .map((ri) => (
+                        <div key={ri.id} className="card upgrade-item">
+                          <strong>{ri.itemName}</strong>
+                          <p>
+                            Your DPS: {ri.playerDpsMean.toFixed(0)} &rarr;
+                            Upgrade: {ri.upgradeDpsMean.toFixed(0)}
+                          </p>
+                          <p className="improvement">
+                            +{ri.dpsImprovement.toFixed(0)} DPS (+
+                            {ri.dpsImprovementPercent.toFixed(1)}%)
+                          </p>
+                        </div>
+                      ))}
                   </div>
                 </>
               ) : (
